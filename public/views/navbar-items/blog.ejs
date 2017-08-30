@@ -1,0 +1,90 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>Blog</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <% include nav.ejs %>
+</head>
+<body>
+    <% if (message != null) { %>
+        <div class="alert alert-danger"><%= message %></div>
+    <% } %>
+    <div class="col-md-9">
+        <div class="container">
+            <div class="jumbotron text-justify" style="padding: 5px 25px 0 25px; display: inline; float: left; width: 100%">
+                 <% if (user && user.admin == 1) { %>
+                        <a href="/post" class="btn btn-default btn-sm" style="display: inline; float: right; margin-top: 20px">New Post</a>
+                <% } %>
+                <h1 style="text-align: center" style="margin: 0">Blog</h1>
+            </div>
+        </div>
+        <br>
+        <% postsPaginate.forEach(function(post) { %>
+            <div class="container" style="padding-bottom: 30px">
+                <ul class="list-group" style="list-style-type: none;">
+                    <li class="list-group-item-blog">
+                        <header class="entry-header">
+                            <div class="entry-header-row">
+                                <div class="entry-header-column">
+                                    <h2 class="entry-title">
+                                         <a href="/blog/<%=post.slug%>" target="_blank"><%= post.title %></a>
+                                    </h2>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="entry-media">
+                            <span class="fa fa-image"> Jake</span>
+                        </div>
+                        <div class="entry-summary">
+                            <p><%= post.description %></p>
+                            <a class="btn btn-danger btn-lg" href="/blog/<%=post.slug%>" target="_blank">Continue Reading %></a>
+                        </div>
+                        <div class="entry-footer">
+                            <p>Tags: <%= post.tags %></p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <br>
+        <% }) %>
+
+        <% if (pageCount > 1) { %>  
+            <ul class="pagination">  
+              <% if (currentPage > 1) { %>
+                  <li><a href="/?page=1">&laquo;</a></li>
+              <% } %>
+              <% var i = 1;
+              if (currentPage > 5) {
+              i = +currentPage - 4;
+              } %>
+              <% if (i !== 1) { %>
+                  <li class="disabled"><a href="#">...</a></li>
+              <% } %>
+              <% for (i; i<=pageCount; i++) { %>
+                <% if (currentPage == i) { %>
+                    <li class="active"><span><%= i %> <span class="sr-only">(current)</span></span></li>
+                <% } else { %>
+                    <li><a href="/blog/?page=<%= i %>"><%= i %></a></li>
+                <% } %>
+                <% if (i == (+currentPage + 4)) { %>
+                    <li class="disabled"><a href="#">...</a></li>
+                <% break; } %>
+              <% } %>
+              <% if (currentPage != pageCount) { %>
+                  <li><a href="/?page=<%= pageCount %>">&raquo;</a></li>
+              <% } %>
+            </ul>  
+        <% } %>
+    </div>
+
+    <% include sidebar.ejs %>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>

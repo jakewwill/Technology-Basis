@@ -1,0 +1,56 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>Apps</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
+
+    <% include nav.ejs %>
+</head>
+<body>
+    <div class="col-md-12">
+        <div class="container">
+            <div class="jumbotron text-justify" style="padding: 5px 25px 20px 25px; display: inline; float: left; width: 100%">
+                <% if (message != null) { %>
+                    <div class="alert alert-danger"><%= message %></div>
+                <% } %>
+                <% if (user && user.admin == 1) { %>
+                        <a href="/newApp" class="btn btn-default btn-sm" style="display: inline; float: right; margin-top: 20px">New App</a>
+                <% } %>
+                <h1 style="text-align: center" style="margin: 0 0 20px 0">Apps</h1>
+            </div>
+        </div>
+
+        <% apps.forEach(function(app) { %>
+            <div class="container" style="padding-bottom: 30px; margin-top: 30px">
+                <ul class="list-group" style="list-style-type: none;">
+                    <li class="list-group-item-app">
+                        <header class="entry-header">
+                            <div class="entry-header-row">
+                                <div class="entry-header-column">
+                                    <h2 class="entry-title">
+                                         <a href="/apps/<%=app.slug%>" target="_blank"><%= app.title %></a>
+                                    </h2>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="entry-media">
+                            <span class="fa fa-image"> Jake</span>
+                        </div>
+                        <div class="entry-summary">
+                            <p><%= app.description %></p>
+                            <a class="btn btn-danger btn-lg" href="/apps/<%=app.slug%>" target="_blank">Continue Reading %></a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <br>
+        <% }) %>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>

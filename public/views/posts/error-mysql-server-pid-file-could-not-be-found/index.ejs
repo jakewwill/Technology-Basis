@@ -1,0 +1,136 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title><%= post.title %></title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
+
+    <%- include('../../../../public/views/navbar-items/nav.ejs') %>
+</head>
+<body>
+    <% if (message != null) { %>
+        <div class="alert alert-success" style="margin-top: -40px"><%= message %></div>
+    <% } %>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="container">
+                <div class="jumbotron text-left" style="padding: 5px 25px 20px 25px; display: inline; float: left; width: 100%">
+                    <% if (user != null) { %>
+                        <form onsubmit="return confirm('Do you really want to delete this post? It will only remove the reference to it in the database, not the content itself in the file system');" name="delete" action="/delete" method="post">
+                            <input id="blog_slug" type="hidden" name="slug">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete Post</button>
+                        </form>
+                    <% } %>
+
+                    <h1 style="text-align: left" style="margin: 0 0 20px 0; font-family: 'Open Sans'"><%= post.title %></h1>
+
+                    <p>This post is identical to another one I have written, titled <a href="/blog/error-mysql-the-server-quit-without-updating-pid-file" target="_blank">MySQL Error! The server quit without update PID file"</a>. I decided to have two duplicate posts because they are very similar issues, have the same solutions, and are ones that I both came across as I was developing this site. In addition, someone searching for a solution to one of the problems will be able to find it more easily if I split it into two posts with different titles. With these particular errors, I found that there were not only several causes for them, but that there were several solutions, and not all of them worked every time. Because of this, I will provide a list of the most common solutions to these problems, and at least one of them should be effective in almost all cases. Note: all of these solutions are designed for the MacOS, and will probably not work on Windows or Linux (unfortunately, that's the only computer I use).</p>
+                    <h2>Solution #1: Straight up restart</h2>
+                    <p>This solution is the simplest - type <code>/usr/local/mysql/support-files/mysql.server restart</code> into a command prompt and pray. If it works, great! If it doesn't, skip to solution 2. If you get a command-not-found error, do a little googling to find the proper command to restart MySQL for your system is - I just used the most common one.</p>
+
+                    <h2>Solution #2: Kill all MySQL processes</h2>
+                    <p style="margin-bottom: 0">Sometimes simply restarting MySQL won't kill <em>all</em> of its processes. To do this, type into a command prompt:</p>
+
+                    <pre><code>
+    mysqladmin -uroot shutdown
+    sudo killall mysqld 
+                    </code></pre>
+
+                    <p>Now restart MySQL using <code>/usr/local/mysql/support-files/mysql.server restart</code> and see if it works. If not, move to a different solution.</p>
+
+                    <h2>Solution #3: Repair Disk Permissions</h2>
+
+                    <p>Sometimes this issue is caused by corrupted file permissions. To fix the problem if this is the case, open up Disk Utility in the applications folder, and select your hard drive, as shown:</p>
+
+                    <img src="/views/posts/error-mysql-server-pid-file-could-not-be-found/res/Disk Utility.png" width="100%" height="auto"></image>
+
+                     <p>Then, towards the bottom, click on 'Repair Disk Permissions'. Restart MySQL by typing <code>/usr/local/mysql/support-files/mysql.server restart</code>, and see if it works. If it doesn't, try a different solution - it probably wasn't due to file permission errors.</p>
+
+                    <h2>Solution #4: Replacing the PID file manually</h2>
+                    <p>In my opinion, if you can get this to work, it is one of the better solutions, because you can maintain your current version of MySQL and, more importantly, all of the databases that you have created.</p>
+                    <h4>1) Locate your MySQL configurations file (my.cnf on a mac)</h4>
+                    <p>On a Mac, it is usually located at <code>/usr/local/mysql/support-files/</code> if you installed MySQL directly or at <code>/usr/local/opt/mysql/</code> if you installed it through Homebrew. Unfortunately, I do not use a windows computer, so I don't know exactly where it is located on a PC.</p>
+
+                    <p>If it is at none of these locations, you can either choose to spend some time researching it's location on your computer (some google searches should help) or you can skip to a different solution - in most cases, though, it should be at one of these spots.</p>
+
+                    <p>This file, as I stated above, is the configuration file for MySQL. Open it up with a text editor and search for the parameter pid-file. Edit it (or add it, if it is not there) to say <code>pid-file = /var/run/mysqld/mysqld.pid</code></p>
+
+                    <h4>2) Create a new directory to hold the PID file</h4>
+                    <p>Then, you need to create the directory <code>/var/run/mysqld/</code> and give it the proper permissions to run. Execute the following commands in a command prompt</p>
+
+                    <pre><code>
+    sudo mkdir /var/run/mysqld
+    sudo touch /var/run/mysqld/mysqld.pid
+    sudo chown -R mysql:mysql /var/run/mysqld
+                    </code></pre>
+
+                    <h4>3) Restart MySQL</h4>
+                    <p>Once you've done this, go ahead and restart MySQL (which is usually done by typing <code>/usr/local/mysql/support-files/mysql.server restart</code> into a command line. If all went well, MySQL should start normally. If it didn't, you'll either get the same error (in which case I suggest you move to a different solution), or it'll say <code>ERROR! The server quit without updating PID file (/var/run/mysqld/mysqld.pid).</code>, in which case you should check out THIS post. Or, it'll cause another error that I'm unaware of, and I still suggest you try a different solution</p>
+
+                    <h2>Solution #5: Just reinstall the latest version of MySQL</h2>
+                    <p>This is probably the most effective, but also the worst solution to this particular problem. If you do this, you will likely lose all of the databases that you have created unless you find a way to back them up, but it will almost certainly fix the issue</p>
+
+                    <p>One of the most important steps in this solution is to <em>completely</em> remove MySQL from your mac - otherwise the newer version will draw upon old data and you might be stuck with the same issue all over again. To do this, you need to enter a number of commands: </p>
+
+                    <p style="margin-bottom: 0">Stop the server:</p>
+                    <pre><code>
+    sudo /usr/local/mysql/support-files/mysql.server stop
+                    </code></pre>
+
+                    <p style="margin-bottom: 0">If you used Homebrew to install MySQL: </p>
+                    <pre><code>
+    brew remove mysql
+    brew cleanup
+                    </code></pre>
+
+
+                    <p style="margin-bottom: 0">Remove all traces of MySQL from your filesystem (do in addition to above steps):</p>
+                    <pre><code>
+    sudo rm /usr/local/mysql
+    sudo rm -rf /usr/local/mysql*
+    sudo rm -rf /Library/StartupItems/MySQLCOM
+    rm -rf ~/Library/PreferencePanes/My*
+    sudo rm -rf /Library/PreferencePanes/My*
+    edit /etc/hostconfig and remove the line MYSQLCOM=-YES-
+    sudo rm ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+    sudo rm -rf /Library/Receipts/mysql*
+    sudo rm -rf /Library/Receipts/MySQL*
+    sudo rm -rf /private/var/db/receipts/*mysql*
+    launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+                    </code></pre>
+                    <p>RESTART YOUR COMPUTER - I promise you, you'll thank me later. This kills any existing MySQL processes, and may save you from having to repeat the whole process above at a later time. After you've done that, try running MySQL - <em>it shouldn't work</em>.
+                    </p>
+                    <p>Once you've done that, you're going to want to go <a href="https://www.mysql.com/downloads/" target="_blank">here</a> to download the latest version of MySQL. You'll need to create a free Oracle account, and the download process can take some time (the file is several hundred megabytes). Once it's downloaded, open it up and follow the installation instructions.</p>
+
+                    <p>IMPORTANT - once it's finished downloading, a screen will show up containing your new MySQL root password. SAVE THIS PASSWORD. It saves you from a lot of trouble in the future, with having to reset your password. You can change it later. Once you've done that, close the window and try to run mysql:</p>
+                    <pre><code>
+    sudo /usr/local/mysql/support-files/mysql.server start
+                    </code></pre>
+
+                    <p>It should work as expected - if it doesn't, you likely made a mistake in removing the old version of MySQL, or there is some unforseeable thing wrong with your computer/MySQL that I can't help you with.</p>
+
+                    <p>I hope this article proved useful, and that it saves you from the hours of google searches I experienced when I encountered this problem. At the time, I could find no article of combined solutions like this one, and I would have been grateful for it at the time - I hope that it helps you!</p>
+
+                    <p>If you have any questions or concerns, or want to contact me about the information in this article, or have an idea for a new article I should write, feel free to email me at jwill18@punahou.edu</p>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../../../../public/views/navbar-items/sidebar.ejs') %>
+    </div>
+
+    
+    <%- include('../../../../public/views/comments.ejs') %>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+    <script>
+        var slug = <%- JSON.stringify(post.slug) %>
+        document.getElementById("blog_slug").value = slug
+    </script>
+</body>
+</html>

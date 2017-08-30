@@ -1,0 +1,37 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Technology Basis</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
+    <link rel="shortcut icon" type="image/x-icon" href="https://s3-us-west-1.amazonaws.com/technologybasis/coding.png" />
+    
+    <% include nav.ejs %>
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="container">
+                <div class="jumbotron text-center" style="padding: 5px 25px 20px 25px">
+                <h1 style="margin: 15px 0 20px 0">Home Page</h1>
+                    <!-- Show any error messages -->
+                    <% if (message != null) { %>
+                        <div class="alert alert-danger"><%= message %></div>
+                    <% } %>
+
+                    <p class="text-justify" style="text-indent: 50px">Welcome to Technology Basis! I will be using this website to post articles containing the solutions to specific programming problems, tutorials about certain programming concepts, reviews of certain technological products, games/apps I create, and more! Many of the posts will be extrememly short, and will only contain a few sentences or a paragraph pertaining to a specific question. Whether you're here just to find a quick solution to your programming error, or to play one of the games I've created, or even if you just stumbled upon this website by accident, I hope that you can find content on here that is beneficial or enjoyable for you. </p>
+
+                    <p class="text-justify" style="text-indent: 50px">If you find this site helpful, bookmark it and you'll be able to easily reference it later. Or, in your google searches, always enter in the exact error message that you receive - this increases that chances that my solution will show up on the first page of your results. Feel free to share the solutions with your friends or co-workers: the more people this site benefits, the better! Remember, if you have a coding question, feel free to use the search box on this site to directly search for your problem - it might not be as good as google at general searches, but it is better for finding solutions to very specific problems, if I have an article about it.</p>
+                </div>
+            </div>
+        </div>
+
+        <% include sidebar.ejs %>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>

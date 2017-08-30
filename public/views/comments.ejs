@@ -1,0 +1,101 @@
+<div class="row" style="margin-top: 20px">
+		<div class="col-md-9">
+			<div class="container" style="text-align: left">
+				<h4 style="margin-left: 30px">Comments</h4>
+				<% if (user != null) { %>
+					<form action="/comment" method="post" style="margin-left: 30px; margin-top: 20px">
+						<input id="post_id" type="hidden" name="post_id">
+						<input id="parent_id_none" type="hidden" name="parent_id">
+
+		                <div class="form-group">
+		                    <label>Leave a comment: </label>
+		                    <textarea onkeyup="auto_grow(this)" onkeydown="auto_grow(this)" type="text" class="form-control" name="content"></textarea>
+		                </div>
+
+		                <button type="submit" class="btn btn-primary btn-lg" style="margin-bottom: 5px">Add Comment</button>
+		            </form>
+		           <% } else { %>
+		           	<h5 style="margin-left: 30px; margin-top: 15px">Login <a href="/login">here</a> to submit a comment</h5>
+		           <% } %>
+			</div>
+		</div>
+	</div>
+<div class="row" style="margin-top: 20px">
+	<div class="col-md-9">
+		<div class="container" style="text-align: left">
+			<ul class="comments_list">
+				<% for (var i = comments.length - 1; i >= 0; i--) { %>
+					<!-- Display the actual comment-->
+		            <div class="comment" id="comment_<%-comments[i].id%>">
+		                <header class="comment-header" style="margin-bottom: 10px; margin-top: 10px">
+		                	<span class="username" style="color: rgb(32, 93, 122); font-size: 13px; font-weight: bold"><%= comments[i].username %></span>
+		                	<span class="date" style="color: #656c7a; font-size: 12px"> • <%= comments[i].timestamp.toLocaleString() %></span>
+		                	<% if (user && (comments[i].username == user.username || user.admin == 1)) { %>
+		                		<form style="display: inline; float: right" onsubmit="return confirm('Do you really want to delete this comment?');" name="delete" action="/deleteComment" method="post">
+		                            <input id="comment_id" type="hidden" name="comment_id" value="<%-comments[i].id%>">
+		                            <button type="submit" class="btn btn-danger btn-sm">Delete Comment</button>
+		                        </form>
+		                	<% } %>
+		                </header>
+		                <div class="content">
+		                	<p style="font-weight: normal; margin-bottom: 0"><%= comments[i].content %></p>
+		                	<!-- <button class="btn btn-link" style="margin: 0; padding-left: 0" onclick="clickReply(<%= comments[i].id %>)">Reply</button> -->
+		                </div>
+		            </div>
+		            <!-- Hidden reply field-->
+		            <div class="reply_<%=comments[i].id%>" hidden="true">
+		            	<div class="container" style="text-align: left; padding-left: 0; margin-left: 30px">
+							<% if (user != null) { %>
+								<form action="/comment" method="post" style="margin-top: 20px">
+									<input id="reply_post_id" type="hidden" name="post_id">
+									<input id="parent_id" type="hidden" name="parent_id">
+
+					                <div class="form-group">
+					                    <textarea onkeyup="auto_grow(this)" onkeydown="auto_grow(this)" type="text" class="form-control" name="content"></textarea>
+					                </div>
+
+					                <button type="submit" class="btn btn-primary btn-lg" style="margin-bottom: 5px">Add Comment</button>
+					            </form>
+					           <% } else { %>
+					           	<h5 style="margin-left: 30px; margin-top: 15px">Login <a href="/login">here</a> to submit a comment</h5>
+					           <% } %>
+						</div>
+		            </div>
+		        <% } %>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<script>
+    function auto_grow(element) {
+        element.style.height = "5px";
+        element.style.height = (element.scrollHeight) + "px";
+
+        var id = parseInt(<%-JSON.stringify(post.id)%>)
+        document.getElementById("post_id").value = id
+
+        document.getElementById("parent_id_none").value = -1
+    }
+
+    function clickReply(comment_id) {
+    	var parentComment = document.getElementById("comment_" + comment_id)
+
+    	var reply_div = document.getElementsByClassName("reply_" + comment_id);
+
+    	if (reply_div[0].hidden) {
+    		reply_div[0].hidden = false;
+    	} else {
+    		reply_div[0].hidden = true;
+    	}
+
+    	var id = parseInt(<%-JSON.stringify(post.id)%>)
+        document.getElementById("reply_post_id").value = id
+
+        document.getElementById("parent_id").value = comment_id
+    }
+
+    function displayComments() {
+
+    }
+</script>

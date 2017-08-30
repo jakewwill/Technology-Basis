@@ -1,0 +1,89 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title><%= post.title %></title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
+
+    <%- include('../../../../public/views/navbar-items/nav.ejs') %>
+</head>
+<body>
+    <% if (message != null) { %>
+        <div class="alert alert-success" style="margin-top: -40px"><%= message %></div>
+    <% } %>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="container">
+                <div class="jumbotron text-justify" style="padding: 5px 25px 20px 25px; display: inline; float: left; width: 100%">
+                    <% if (user != null) { %>
+                        <form onsubmit="return confirm('Do you really want to delete this post? It will only remove the reference to it in the database, not the content itself in the file system');" name="delete" action="/delete" method="post">
+                            <input id="blog_slug" type="hidden" name="slug">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete Post</button>
+                        </form>
+                    <% } %>
+
+                    <h1 style="text-align: left" style="margin: 0 0 20px 0; font-family: 'Open Sans'"><%= post.title %></h1>
+
+                    <p>I ran across this error message as I was building this very website (which happens to be built using NodeJS and Express). Usually, this error means that you are trying to reference an object that does not exist - you probably forgot to pass it to your view through your router, and I did. </p>
+
+                    <p>I first encountered this message when I was designing the "Recent Posts" sidebar container. All that container does is it holds a list (up to 3 maximum) of the most recent posts displayed. The posts in the database are added sequentially, which means that the most recent ones will be on the bottom, and therefore have the greatest index. My code to pick out the latest 3 (when I was getting the error) looked something like this: </p>
+
+                    <PRE class="prettyprint"><code>
+    &lt;div class="col-md-3"&gt;
+        &lt;div class="container" style="margin-bottom: 30px; text-align: left"&gt;
+            &lt;h1>Recent Posts&lt;/h1&gt;
+            &lt;% for (var i = posts.length - 1; i > posts.length - 4; i--) { %&gt;
+                 &lt;a href="/blog/&lt;%=posts[i].slug%&gt;" target="_blank"&gt;-&lt;%= posts[i].title %&gt;&lt;/a&gt;
+                &lt;br&gt;&lt;br&gt;
+            &lt;% } %&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+                    </code></PRE>
+
+                    <p>I used (and am still using) ejs to write the views for the website, but even if the syntax is unfamiliar, you should be able to pick up the general gist of it - it loops through an array of posts, starting from the last one and working its way down to the 3rd to last one. What is frustrating about an error like this is that that code is technically correct - it does exactly what it's supposed to do. The error comes in, however, when the array of posts doesn't contain at least 3 items - then, in the line: </p>
+
+                    <PRE class="prettyprint"><code>
+    &lt;a href="/blog/&lt;%=posts[i].slug%&gt;" target="_blank"&gt;-&lt;%= posts[i].title %&gt;&lt;/a&gt;
+                    </code></PRE>
+
+                    <p>when you try to access posts[i].slug in the href of the link, it returns the "esc is not a function" error, because posts[i] doesn't exist. It would be the equivalent of an ArrayOutOfBounds error in a langauge like Java or Swift. Once I changed it to the correct code: </p>
+
+                    <PRE class="prettyprint"><code>
+    &lt;div class="col-md-3"&gt;
+        &lt;div class="container" style="margin-bottom: 30px; text-align: left"&gt;
+            &lt;h1>Recent Posts&lt;/h1&gt;
+            &lt;% for (var i = posts.length - 1; i > posts.length - 3; i--) { %&gt;
+                &lt;% if (i < posts.length && i >= 0) { %&gt;
+                     &lt;a href="/blog/&lt;%=posts[i].slug%&gt;" target="_blank"&gt;-&lt;%= posts[i].title %&gt;&lt;/a&gt;
+                    &lt;br&gt;&lt;br&gt;
+                 &lt;% } %&gt;
+            &lt;% } %&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+                    </code></PRE>
+
+                    <p>everything worked fine. </p>
+
+                    <p>Of course, this is not the only scenario in which this error can occur - if you do get this error, however, the first thing that I would do is to make sure all of the variables in that view exist and are accessible. By spending an extra few seconds doing that, you might save yourself from a lot of frustration and wasted time debugging in the future. In fact, this error message can be accompanied by one say "cannot read property of ___", which is a surefire hint that at least one of your variables is not initialized - make sure to check.</p>
+
+                    <p>If you have any questions or concerns, or want to contact me about the information in this article, or have an idea for a new article I should write, feel free to email me at jwill18@punahou.edu</p>
+                </div>
+            </div>
+        </div>
+        <%- include('../../../../public/views/navbar-items/sidebar.ejs') %>
+    </div>
+    
+    <%- include('../../../../public/views/comments.ejs') %>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+    <script>
+        var slug = <%- JSON.stringify(post.slug) %>
+        document.getElementById("blog_slug").value = slug
+    </script>
+</body>
+</html>

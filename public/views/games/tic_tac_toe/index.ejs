@@ -1,0 +1,171 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title><%= game.title %></title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
+
+    <%- include('../../../../public/views/navbar-items/nav.ejs') %>
+</head>
+<body>
+    <div class="col-md-12">
+        <div class="container">
+            <div class="jumbotron text-justify" style="padding: 5px 25px 20px 25px; display: inline; float: left; width: 100%">
+                <% if (user != null) { %>
+                    <form name="delete" action="/deleteGame" method="post">
+                        <input id="blog_slug" type="hidden" name="slug">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete Game</button>
+                    </form>
+                <% } %>
+
+                <h1 style="text-align: center" style="margin: 0 0 20px 0"><%= game.title %></h1>
+                <div id="canvas_bloc" style="margin: 50px auto 0 auto">
+	            	<canvas id="canvas"></canvas>
+	            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+    	var canvas = document.getElementById("canvas");
+        var canvasDiv = document.getElementById("canvas_bloc");
+		var ctx = canvas.getContext("2d");
+		var turn = "Player"
+		var board = ['-1', '-1', '-1', '-1', '-1', '-1', '-1', '-1' ,'-1']
+
+		canvas_bloc.style.width = "50%";
+		canvas_bloc.style.height = String(canvas_bloc.clientWidth) + 'px';
+
+		canvas.width = canvas_bloc.clientWidth;
+		canvas.height = canvas_bloc.clientHeight;
+
+		ctx.beginPath();
+		ctx.moveTo(canvas.width/3, 0);
+		ctx.lineTo(canvas.width/3, canvas.height);
+		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.moveTo(canvas.width*2/3, 0);
+		ctx.lineTo(canvas.width*2/3, canvas.height);
+		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.moveTo(0, canvas.height/3);
+		ctx.lineTo(canvas.width, canvas.height/3);
+		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.moveTo(0, canvas.height*2/3);
+		ctx.lineTo(canvas.width, canvas.height*2/3);
+		ctx.stroke();
+
+		document.onmousedown = function(event) {
+			if (turn == "Player") {
+				console.log('hi')
+				var xImage = new Image();
+				xImage.src = '/views/games/tic_tac_toe/res/x.png'
+
+				var rect = canvas.getBoundingClientRect();
+				var x = event.x - rect.left
+				var y = event.y - rect.top
+
+				var validMovePlayed = false
+
+				if (x > 0 && x < canvas.width/3 && y > 0 && y < canvas.height/3) {
+					if (board[0] == '-1') {
+						ctx.drawImage(xImage, (canvas.width/3 - xImage.width)/2, (canvas.height/3 - xImage.height)/2, 100, 100);
+						board[0] = 'x'
+						validMovePlayed = true
+					}
+				} else if (x > canvas.width/3 && x < canvas.width * 2/3 && y > 0 && y < canvas.height/3) {
+					if (board[1] == '-1') {
+						ctx.drawImage(xImage, canvas.width/3 + (canvas.width/3 - xImage.width)/2, (canvas.height/3 - xImage.height)/2, 100, 100);
+						board[1] = 'x'
+						validMovePlayed = true
+					}
+				} else if (x > canvas.width * 2/3 && x < canvas.width && y > 0 && y < canvas.height/3) {
+					if (board[2] == '-1') {
+						ctx.drawImage(xImage, canvas.width * 2/3 + (canvas.width/3 - xImage.width)/2, (canvas.height/3 - xImage.height)/2, 100, 100);
+						board[2] = 'x'
+						validMovePlayed = true
+					}
+				}
+
+				if (x > 0 && x < canvas.width/3 && y > canvas.height/3 && y < canvas.height * 2/3) {
+					if (board[3] == '-1') {
+						ctx.drawImage(xImage, (canvas.width/3 - xImage.width)/2, canvas.height/3 + (canvas.height/3 - xImage.height)/2, 100, 100);
+						board[3] = 'x'
+						validMovePlayed = true
+					}
+				} else if (x > canvas.width/3 && x < canvas.width * 2/3 && y > canvas.height/3 && y < canvas.height * 2/3) {
+					if (board[4] == '-1') {
+						ctx.drawImage(xImage, canvas.width/3 + (canvas.width/3 - xImage.width)/2, canvas.height/3 + (canvas.height/3 - xImage.height)/2, 100, 100);
+						board[4] = 'x'
+						validMovePlayed = true
+					}
+				} else if (x > canvas.width * 2/3 && x < canvas.width && y > canvas.height/3 && y < canvas.height * 2/3) {
+					if (board[5] == '-1') {
+						ctx.drawImage(xImage, canvas.width * 2/3 + (canvas.width/3 - xImage.width)/2, canvas.height/3 + (canvas.height/3 - xImage.height)/2, 100, 100);
+						board[5] = 'x'
+						validMovePlayed = true
+					}
+				}
+
+				if (x > 0 && x < canvas.width/3 && y > canvas.height * 2/3 && y < canvas.height) {
+					if (board[6] == '-1') {
+						ctx.drawImage(xImage, (canvas.width/3 - xImage.width)/2, canvas.height * 2/3 + (canvas.height/3 - xImage.height)/2, 100, 100);
+						board[6] = 'x'
+						validMovePlayed = true
+					}
+				} else if (x > canvas.width/3 && x < canvas.width * 2/3 && y > canvas.height * 2/3 && y < canvas.height) {
+					if (board[7] == '-1') {
+						ctx.drawImage(xImage, canvas.width/3 + (canvas.width/3 - xImage.width)/2, canvas.height * 2/3 + (canvas.height/3 - xImage.height)/2, 100, 100);
+						board[7] = 'x'
+						validMovePlayed = true
+					}
+				} else if (x > canvas.width * 2/3 && x < canvas.width && y > canvas.height * 2/3 && y < canvas.height) {
+					if (board[8] == '-1') {
+						ctx.drawImage(xImage, canvas.width * 2/3 + (canvas.width/3 - xImage.width)/2, canvas.height * 2/3 + (canvas.height/3 - xImage.height)/2, 100, 100);
+						board[8] = 'x'
+						validMovePlayed = true
+					}
+				}
+
+				// Have computer play
+				if (validMovePlayed) {
+					turn = "Computer"
+				}
+			}
+		}
+
+		// Executes every frame
+		setInterval(function(){
+			if (turn == "Computer") {
+				continueLoop = false
+
+				var oImage = new Image();
+				oImage.src = '/views/games/tic_tac_toe/res/o.png'
+
+				do {
+					var random = Math.round(Math.random() * 9);
+					if (board[random] != '-1') {
+						board[random] = 'o';
+						ctx.drawImage(oImage, canvas.width * (random % 3)/2  + (canvas.width/3 - oImage.width)/2, canvas.height * Math.round(random/3) + (canvas.height/3 - oImage.height)/2, 100, 100);
+					} else {
+						continueLoop = true
+					}
+				} while (continueLoop)
+			}
+		},1000/60);
+
+		// Code to fill in the slug value for the delete method
+        var slug = <%- JSON.stringify(game.slug) %>
+        document.getElementById("blog_slug").value = slug
+    </script>
+</body>
+</html>

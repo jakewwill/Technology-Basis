@@ -1,0 +1,127 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title><%= app.title %></title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
+
+    <%- include('../../../../public/views/navbar-items/nav.ejs') %>
+</head>
+<body>
+    <% if (message != null) { %>
+        <div class="alert alert-success" style="margin-top: -40px"><%= message %></div>
+    <% } %>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="container">
+                <div class="jumbotron text-left" style="padding: 5px 25px 20px 25px; display: inline; float: left; width: 100%">
+                    <% if (user != null && user.admin == 1) { %>
+                        <form onsubmit="return confirm('Do you really want to delete this post? It will only remove the reference to it in the database, not the content itself in the file system');" name="delete" action="/deleteApp" method="post">
+                            <input id="app_slug" type="hidden" name="slug">
+                            <button type="submit" onclick="deleteApp()" class="btn btn-danger btn-sm">Delete App</button>
+                        </form>
+                    <% } %>
+
+                    <h1 style="text-align: center" style="margin: 0 0 20px 0; font-family: 'Open Sans'"><%= app.title %></h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 10px">
+        <div class="col-md-6">
+            <div class="container">
+                <form id="string-compare-form">
+                    <div class="form-group">
+                        <label style="margin-top: 10px">Text 1:</label>
+                        <textarea onkeyup="auto_grow(this)" onkeydown="auto_grow(this)" type="text" class="form-control" name="string1"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Text 2:</label>
+                        <textarea onkeyup="auto_grow(this)" onkeydown="auto_grow(this)" type="text" class="form-control" name="string2"></textarea>
+                    </div>
+
+                    <input type="button" onclick="submitForm()" value="Compare" class="btn btn-warning" style="margin-bottom: 10px"/>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="container" style="min-height: 245px">
+                <h2>Results:</h2>
+                <div id="loader">
+                    
+                </div>
+
+                <div id="myDiv" class="animate-bottom">
+                  <h2>Your texts had a dice's coefficient of:</h2>
+                  <p id="result">#</p>
+                  <p>0 represents two completely different texts, and 1 represents identical texts</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        window.onload = loadWindow;
+
+        function loadWindow() {
+           document.getElementById("loader").style.display = "none"
+        }
+
+        function showResults() {
+          document.getElementById("loader").style.display = "none";
+          document.getElementById("myDiv").style.display = "block";
+        }
+
+    	function auto_grow(element) {
+            element.style.height = (element.scrollHeight) + "px";
+        }
+
+        function submitForm() {
+            document.getElementById("loader").style.display = "block"
+            window.scrollTo(0,document.body.scrollHeight);
+
+            setTimeout(function () { // You need the delay to allow the loader to display
+                var string1 = document.getElementById('string-compare-form').elements["string1"].value;
+                var string2 = document.getElementById('string-compare-form').elements["string2"].value;
+
+                document.getElementById("result").innerHTML = dice_coefficient(string1, string2)
+                console.log(dice_coefficient(string1, string2))
+                showResults();
+            }, 100);
+    		
+        }
+
+    	function deleteApp() {
+        	var slug = <%- JSON.stringify(app.slug) %>
+        	document.getElementById("app_slug").value = slug
+        }
+
+        function dice_coefficient(string1, string2) {
+          var intersection = 0;
+          var length1 = string1.length - 1;
+          var length2 = string2.length - 1;
+          if(length1 < 1 || length2 < 1) return 0;
+          var bigrams2 = [];
+          for(var i = 0; i < length2; i++) {
+            bigrams2.push(string2.substr(i,2));
+          }
+          for(var i = 0; i < length1; i++) {
+            var bigram1 = string1.substr(i, 2);
+            for(var j = 0; j < length2; j++) {
+              if(bigram1 == bigrams2[j]) {
+                intersection++;
+                bigrams2[j] = null;
+                break;
+          }}} 
+          return (2.0 * intersection) / (length1 + length2);  
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    
+</body>
+</html>

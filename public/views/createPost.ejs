@@ -1,0 +1,55 @@
+<!-- views/login.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Create a Post</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+
+    <% include navbar-items/nav.ejs %>
+</head>
+<body>
+    <div class="container">
+        <div class="col-sm-6 col-sm-offset-3">
+            <h1><span class="fa fa-sign-in"></span> New Post</h1>
+            <h5>Note: this simply creates a reference to your post that is expected to 
+            already exist in the file system. Please ensure your inputted folder name matches
+            your actual folder name exactly</h5>
+            <!-- POST FORM -->
+            <form action="/post" method="post">
+                <div class="form-group">
+                    <label>Title: </label>
+                    <input type="text" class="form-control" name="title">
+                </div>
+                <div class="form-group">
+                    <label>Description: </label>
+                    <textarea onkeyup="auto_grow(this)" onkeydown="auto_grow(this)" type="text" class="form-control" name="description"></textarea> 
+                </div>
+                <div class="form-group">
+                    <label>Tags: </label>
+                    <input type="text" class="form-control" name="tags">
+                </div>
+                <div class="form-group">
+                    <label>Folder Name: </label>
+                    <input type="text" class="form-control" name="folder_name">
+                </div>
+                <div class="form-group">
+                    <label>Slug (the sub-url):</label>
+                    <input type="text" class="form-control" name="slug">
+                </div>
+                <button type="submit" class="btn btn-warning btn-lg" style="margin-bottom: 5px">Post</button>
+            </form>
+            <a href="/blog">Return to blog</a>
+            <hr>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function submitForm() {
+            var string1 = document.getElementById('string-compare-form').elements["string1"].value
+            var string2 = document.getElementById('string-compare-form').elements["string2"].value
+
+            console.log(similarity(string1, string2))
+        }
+    </script>
+</body>
+</html>

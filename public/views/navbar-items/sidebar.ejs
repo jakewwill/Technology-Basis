@@ -1,21 +1,19 @@
-<div class="col-md-3">
-	<div class="row" id="sidebar" style="width: 100%">
-		<div class="container" style="margin-bottom: 30px; text-align: left">
-	    	<h1 style="text-align: center">Search for a Post</h1>
-	        <form action="/search" method="post">
-                <input type="text" class="form-control" name="search_box" style="margin-bottom: 30px; height: 40px" placeholder="Search...">
-            </form>
-            <p style="font-size: 13px; text-align: center">This search box is very general, but will place the most relevent posts on top</p>
-	    </div>
+<div class="col-md-3" style="padding-left: 20px; padding-right: 20px">
+	<div class="container" style="margin-bottom: 30px; text-align: left">
+    	<h1 style="text-align: center">Search for a Post</h1>
+        <form action="/search" method="post">
+            <input type="text" class="form-control" name="search_box" style="margin-bottom: 30px; height: 40px" placeholder="Search...">
+        </form>
+        <p style="font-size: 13px; text-align: center">This search box is very general, but will place the most relevent posts on top</p>
+    </div>
 
-		<div class="container" style="margin-bottom: 30px; text-align: left">
-	    	<h1 style="text-align: center">Recent Posts</h1>
-	        <% for (var i = posts.length - 1; i > posts.length - 3; i--) { %>
-	        	<% if (i < posts.length && i >= 0) { %>
-	        		<a href="/blog/<%=posts[i].slug%>" target="_blank">- <%= posts[i].title %></a>
-	        		<br><br>
-	        	<% } %>
-	        <% } %>
-	    </div>
-	</div>
+	<div class="container" style="margin-bottom: 30px; text-align: left">
+    	<h1 style="text-align: center">Recent Posts</h1>
+        <% for (var i = posts.length - 1; i > posts.length - 3; i--) { %>
+        	<% if (i < posts.length && i >= 0) { %>
+        		<a href="/blog/<%=posts[i].slug%>" target="_blank">- <%= posts[i].title %></a>
+        		<br><br>
+        	<% } %>
+        <% } %>
+    </div>
 </div>

@@ -25,7 +25,7 @@
 		<div class="container" style="text-align: left">
 			<ul class="comments_list">
 				<% for (var i = comments.length - 1; i >= 0; i--) { %>
-					<!-- Display the actual comment-->
+					<!-- Display the actual parent comment-->
 		            <div class="comment" id="comment_<%-comments[i].id%>">
 		                <header class="comment-header" style="margin-bottom: 10px; margin-top: 10px">
 		                	<span class="username" style="color: rgb(32, 93, 122); font-size: 13px; font-weight: bold"><%= comments[i].username %></span>
@@ -39,12 +39,14 @@
 		                </header>
 		                <div class="content">
 		                	<p style="font-weight: normal; margin-bottom: 0"><%= comments[i].content %></p>
-		                	<!-- <button class="btn btn-link" style="margin: 0; padding-left: 0" onclick="clickReply(<%= comments[i].id %>)">Reply</button> -->
+		                	<!-- <% if (user != null) { %>
+					        	<button class="btn btn-link" style="margin: 0; padding-left: 0" onclick="clickReply(<%= comments[i].id %>)">Reply</button>
+					        <% } %> -->
 		                </div>
 		            </div>
 		            <!-- Hidden reply field-->
 		            <div class="reply_<%=comments[i].id%>" hidden="true">
-		            	<div class="container" style="text-align: left; padding-left: 0; margin-left: 30px">
+		            	<div class="container" style="text-align: left; padding-left: 0; margin-left: 0">
 							<% if (user != null) { %>
 								<form action="/comment" method="post" style="margin-top: 20px">
 									<input id="reply_post_id" type="hidden" name="post_id">
@@ -53,8 +55,9 @@
 					                <div class="form-group">
 					                    <textarea onkeyup="auto_grow(this)" onkeydown="auto_grow(this)" type="text" class="form-control" name="content"></textarea>
 					                </div>
-
-					                <button type="submit" class="btn btn-primary btn-lg" style="margin-bottom: 5px">Add Comment</button>
+					                <% if (user != null) { %>
+					                	<button type="submit" class="btn btn-primary btn-lg" style="margin-bottom: 5px">Add Reply</button>
+					                <% } %>
 					            </form>
 					           <% } else { %>
 					           	<h5 style="margin-left: 30px; margin-top: 15px">Login <a href="/login">here</a> to submit a comment</h5>

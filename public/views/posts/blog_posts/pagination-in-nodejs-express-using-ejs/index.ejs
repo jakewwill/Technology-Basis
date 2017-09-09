@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
 
-    <%- include('../../../../public/views/navbar-items/nav.ejs') %>
+    <%- include('../../../../../public/views/navbar-items/nav.ejs') %>
 </head>
 <body>
     <% if (message != null) { %>
@@ -51,22 +51,22 @@
                             <span class="filepath">File: <em>app.js</em></span>
                         </div>
                         <pre class="prettyprint"><code><mark style="background-color: #ffc">var express = require('express');
-    var app = express();
+var app = express();
 
-    app.set('views', '');  
-    app.engine('html', require('ejs').renderFile);  
-    app.set('view engine', 'ejs');
+app.set('views', '');  
+app.engine('html', require('ejs').renderFile);  
+app.set('view engine', 'ejs');
 
-    app.get('/', function(req, res) {
-        //render index.ejs view file
-        res.render('index', {
-            
-        });
+app.get('/', function(req, res) {
+    //render index.ejs view file
+    res.render('index', {
+        
     });
+});
 
-    app.listen(8080, function () {
-      console.log('Example app listening on port 8080!')
-    })</code></pre></mark>
+app.listen(8080, function () {
+  console.log('Example app listening on port 8080!')
+})</code></pre></mark>
                         
                     </div>
 
@@ -80,7 +80,7 @@
                         </div>
                         <pre class="prettyprint"><code><mark style="background-color: #ffc">&lt;html&gt;
     &lt;h1&gt;Hello&lt;/h1&gt;
-    &lt;/html&gt;</code></pre></mark>
+&lt;/html&gt;</code></pre></mark>
                     </div>
                     
                     <p style="margin-top: 20px">Now, if you navigate to your project folder using <code>cd [path]</code> and type <code>node app.ejs</code> to start your server, you can visit localhost:8080 to view your project. At the moment, it will only display the text "Hello" (or whatever code you put into your index.ejs file), but now we have the basic project setup to begin working with pagination.</p>
@@ -96,28 +96,28 @@
                             <span class="filepath">File: <em>app.js</em></span>
                         </div>
                         <pre class="prettyprint"><code>var express = require('express');
-    var app = express();
+var app = express();
 
-    app.set('views', '');  
-    app.engine('html', require('ejs').renderFile);  
-    app.set('view engine', 'ejs');
+app.set('views', '');  
+app.engine('html', require('ejs').renderFile);  
+app.set('view engine', 'ejs');
 
-    app.get('/', function(req, res) {
-        <mark style="background-color: #ffc">var totalPosts = 100,
-        pageSize = 10,
-        pageCount = 100/10,
-        currentPage = 1,
-        posts = [];</mark>
+app.get('/', function(req, res) {
+    <mark style="background-color: #ffc">var totalPosts = 100,
+    pageSize = 10,
+    pageCount = 100/10,
+    currentPage = 1,
+    posts = [];</mark>
 
-        //render index.ejs view file
-        res.render('index', {
+    //render index.ejs view file
+    res.render('index', {
 
-        });
     });
+});
 
-    app.listen(8080, function () {
-      console.log('Example app listening on port 8080!')
-    })</code></pre>
+app.listen(8080, function () {
+  console.log('Example app listening on port 8080!')
+})</code></pre>
                     </div>
 
                     <p style="margin-top: 20px">Next, because this is a demo app, I am going to fill up my array of posts with strings - this will still work with whatever objects you have in your array, however. Keep in mind you can skip this step if you already have an array of objects you want to paginate.</p>
@@ -130,30 +130,30 @@
                         </div>
                     <pre class="prettyprint"><code>var express = require('express');var app = express();
 
-    app.set('views', '');  
-    app.engine('html', require('ejs').renderFile);  
-    app.set('view engine', 'ejs');
+app.set('views', '');  
+app.engine('html', require('ejs').renderFile);  
+app.set('view engine', 'ejs');
 
-    app.get('/', function(req, res) {
-        var totalPosts = 100,
-        pageSize = 10,
-        pageCount = 100/10,
-        currentPage = 1,
-        posts = [];
+app.get('/', function(req, res) {
+    var totalPosts = 100,
+    pageSize = 10,
+    pageCount = 100/10,
+    currentPage = 1,
+    posts = [];
 
-        <mark style="background-color: #ffc">for (var i = 1; i < totalPosts; i++) {
-            posts.push({name: 'Post Number ' + i});
-        }</mark>
+    <mark style="background-color: #ffc">for (var i = 1; i < totalPosts; i++) {
+        posts.push({name: 'Post Number ' + i});
+    }</mark>
 
-        //render index.ejs view file
-        res.render('index', {
+    //render index.ejs view file
+    res.render('index', {
 
-        });
     });
+});
 
-    app.listen(8080, function () {
-      console.log('Example app listening on port 8080!')
-    })</code></pre>
+app.listen(8080, function () {
+  console.log('Example app listening on port 8080!')
+})</code></pre>
                     </div>
 
                     <p style="margin-top: 20px">We then need to split up posts into groups based upon how many posts are displayed per page (the pageSize variable). To do this, we need to initialize another variable, <code>postsArrays</code>, and fill it with lists of posts from each page, as shown below:</p>
@@ -166,35 +166,35 @@
                         </div>
                     <pre class="prettyprint"><code>var express = require('express');var app = express();
 
-    app.set('views', '');  
-    app.engine('html', require('ejs').renderFile);  
-    app.set('view engine', 'ejs');
+app.set('views', '');  
+app.engine('html', require('ejs').renderFile);  
+app.set('view engine', 'ejs');
 
-    app.get('/', function(req, res) {
-        var totalPosts = 100,
-        pageSize = 10,
-        pageCount = 100/10,
-        currentPage = 1,
-        posts = [],
-        <mark style="background-color: #ffc">postsArrays = []</mark>;
+app.get('/', function(req, res) {
+    var totalPosts = 100,
+    pageSize = 10,
+    pageCount = 100/10,
+    currentPage = 1,
+    posts = [],
+    <mark style="background-color: #ffc">postsArrays = []</mark>;
 
-        for (var i = 1; i < totalPosts; i++) {
-            posts.push({name: 'Post Number ' + i});
-        }
+    for (var i = 1; i < totalPosts; i++) {
+        posts.push({name: 'Post Number ' + i});
+    }
 
-        <mark style="background-color: #ffc">while (posts.length > 0) {
-            postsArrays.push(posts.splice(0, pageSize));
-        }</mark>
+    <mark style="background-color: #ffc">while (posts.length > 0) {
+        postsArrays.push(posts.splice(0, pageSize));
+    }</mark>
 
-        //render index.ejs view file
-        res.render('index', {
+    //render index.ejs view file
+    res.render('index', {
 
-        });
     });
+});
 
-    app.listen(8080, function () {
-      console.log('Example app listening on port 8080!')
-    })</code></pre>
+app.listen(8080, function () {
+  console.log('Example app listening on port 8080!')
+})</code></pre>
                     </div>
 
                     <p style="margin-top: 20px; margin-bottom: 0">We now need to find a way extract the current page number from our page as a variable. To do this, you need to insert the following code:</p>
@@ -207,39 +207,39 @@
                         </div>
                     <pre class="prettyprint"><code>var express = require('express');var app = express();
 
-    app.set('views', '');  
-    app.engine('html', require('ejs').renderFile);  
-    app.set('view engine', 'ejs');
+app.set('views', '');  
+app.engine('html', require('ejs').renderFile);  
+app.set('view engine', 'ejs');
 
-    app.get('/', function(req, res) {
-        var totalPosts = 100,
-        pageSize = 10,
-        pageCount = 100/10,
-        currentPage = 1,
-        posts = [],
-        postsArrays = [];
+app.get('/', function(req, res) {
+    var totalPosts = 100,
+    pageSize = 10,
+    pageCount = 100/10,
+    currentPage = 1,
+    posts = [],
+    postsArrays = [];
 
-        for (var i = 1; i < totalPosts; i++) {
-            posts.push({name: 'Post Number ' + i});
-        }
+    for (var i = 1; i < totalPosts; i++) {
+        posts.push({name: 'Post Number ' + i});
+    }
 
-        while (posts.length > 0) {
-            postsArrays.push(posts.splice(0, pageSize));
-        }
+    while (posts.length > 0) {
+        postsArrays.push(posts.splice(0, pageSize));
+    }
 
-        <mark style="background-color: #ffc">if (typeof req.query.page !== 'undefined') {
-            currentPage = req.query.page;
-        }</mark>
+    <mark style="background-color: #ffc">if (typeof req.query.page !== 'undefined') {
+        currentPage = req.query.page;
+    }</mark>
 
-        //render index.ejs view file
-        res.render('index', {
+    //render index.ejs view file
+    res.render('index', {
 
-        });
     });
+});
 
-    app.listen(8080, function () {
-      console.log('Example app listening on port 8080!')
-    })</code></pre>
+app.listen(8080, function () {
+  console.log('Example app listening on port 8080!')
+})</code></pre>
                     </div>
 
                     <p style="margin-top: 20px">In order to understand what this code does, we need to know a little bit about queries. When you call <code>req.query.[variable]</code>, you are referencing the information in the url that looks a bit like this: <code>/?page=1</code>. Here, when we call req.query.page, we would receive "1", as described by the url (aka the current page number). This variable will change based upon what page we are on, and that will be controlled in the view (index.ejs), which we will go over later. All you need to know at the moment is that the current page number is now assigned to the variable currentPage.</p>
@@ -254,42 +254,42 @@
                         </div>
                     <pre class="prettyprint"><code>var express = require('express');var app = express();
 
-    app.set('views', '');  
-    app.engine('html', require('ejs').renderFile);  
-    app.set('view engine', 'ejs');
+app.set('views', '');  
+app.engine('html', require('ejs').renderFile);  
+app.set('view engine', 'ejs');
 
-    app.get('/', function(req, res) {
-        var totalPosts = 100,
-        pageSize = 10,
-        pageCount = 100/10,
-        currentPage = 1,
-        posts = [],
-        postsArrays = [],
-        <mark style="background-color: #ffc">postsList = [];</mark>
+app.get('/', function(req, res) {
+    var totalPosts = 100,
+    pageSize = 10,
+    pageCount = 100/10,
+    currentPage = 1,
+    posts = [],
+    postsArrays = [],
+    <mark style="background-color: #ffc">postsList = [];</mark>
 
-        for (var i = 1; i < totalPosts; i++) {
-            posts.push({name: 'Post Number ' + i});
-        }
+    for (var i = 1; i < totalPosts; i++) {
+        posts.push({name: 'Post Number ' + i});
+    }
 
-        while (posts.length > 0) {
-            postsArrays.push(posts.splice(0, pageSize));
-        }
+    while (posts.length > 0) {
+        postsArrays.push(posts.splice(0, pageSize));
+    }
 
-        if (typeof req.query.page !== 'undefined') {
-            currentPage = req.query.page;
-        }
+    if (typeof req.query.page !== 'undefined') {
+        currentPage = req.query.page;
+    }
 
-        <mark style="background-color: #ffc">postsList = postsArrays[currentPage - 1];</mark>
+    <mark style="background-color: #ffc">postsList = postsArrays[currentPage - 1];</mark>
 
-        //render index.ejs view file
-        res.render('index', {
+    //render index.ejs view file
+    res.render('index', {
 
-        });
     });
+});
 
-    app.listen(8080, function () {
-      console.log('Example app listening on port 8080!')
-    })</code></pre>
+app.listen(8080, function () {
+  console.log('Example app listening on port 8080!')
+})</code></pre>
                     </div>
 
                     <p style="margin-top: 20px">This should be pretty self-explanatory: we need to use currentPage - 1 as our index because the page numbers start at one and increase, whereas postsArrays[0] is our first item. Now, we have a list containing only the posts that we want to display on our page. Our final step will now be to pass all the necessary variables onto the view: </p>
@@ -302,45 +302,45 @@
                         </div>
                     <pre class="prettyprint"><code>var express = require('express');var app = express();
 
-    app.set('views', '');  
-    app.engine('html', require('ejs').renderFile);  
-    app.set('view engine', 'ejs');
+app.set('views', '');  
+app.engine('html', require('ejs').renderFile);  
+app.set('view engine', 'ejs');
 
-    app.get('/', function(req, res) {
-        var totalPosts = 100,
-        pageSize = 10,
-        pageCount = 100/10,
-        currentPage = 1,
-        posts = [],
-        postsArrays = [],
-        postsList = [];
+app.get('/', function(req, res) {
+    var totalPosts = 100,
+    pageSize = 10,
+    pageCount = 100/10,
+    currentPage = 1,
+    posts = [],
+    postsArrays = [],
+    postsList = [];
 
-        for (var i = 1; i < totalPosts; i++) {
-            posts.push({name: 'Post Number ' + i});
-        }
+    for (var i = 1; i < totalPosts; i++) {
+        posts.push({name: 'Post Number ' + i});
+    }
 
-        while (posts.length > 0) {
-            postsArrays.push(posts.splice(0, pageSize));
-        }
+    while (posts.length > 0) {
+        postsArrays.push(posts.splice(0, pageSize));
+    }
 
-        if (typeof req.query.page !== 'undefined') {
-            currentPage = req.query.page;
-        }
+    if (typeof req.query.page !== 'undefined') {
+        currentPage = req.query.page;
+    }
 
-        postsList = postsArrays[currentPage - 1];
+    postsList = postsArrays[currentPage - 1];
 
-        res.render('index', {
-            <mark style="background-color: #ffc">posts: postsList,
-            pageSize: pageSize,
-            totalPosts: totalPosts,
-            pageCount: pageCount,
-            currentPage: currentPage</mark>
-        });
+    res.render('index', {
+        <mark style="background-color: #ffc">posts: postsList,
+        pageSize: pageSize,
+        totalPosts: totalPosts,
+        pageCount: pageCount,
+        currentPage: currentPage</mark>
     });
+});
 
-    app.listen(8080, function () {
-      console.log('Example app listening on port 8080!')
-    })</code></pre>
+app.listen(8080, function () {
+  console.log('Example app listening on port 8080!')
+})</code></pre>
                     </div>
 
                     <p style="margin-top: 20px">Thought we were done? Sorry, but we now need to take these variables and find a way to display them in our index.ejs file. It shouldn't be that much longer though - hang in there!</p>
@@ -355,11 +355,11 @@
                         </div>
                     <pre class="prettyprint"><code><mark style="background-color: #ffc">&lt;link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 
-    &lt;ul class="list-group"&gt;
-      &lt;% posts.forEach( function( post ) { %&gt;
-          &lt;li class="list-group-item"&gt;&lt%= post.name %&gt;&lt;/li&gt;
-      &lt;% }) %&gt;
-    &lt;/ul></mark></code></pre>
+&lt;ul class="list-group"&gt;
+  &lt;% posts.forEach( function( post ) { %&gt;
+      &lt;li class="list-group-item"&gt;&lt%= post.name %&gt;&lt;/li&gt;
+  &lt;% }) %&gt;
+&lt;/ul></mark></code></pre>
                     </div>
 
                     <p style="margin-top: 20px">This code cycles through the posts variable that we passed from our app.js file and displays them on the page. I included a link to the bootstrap css to make it look nice. Now, if you run your app using <code>node app.js</code>, you will see a list of the first 8 items in your list displayed - this is the first page!</p>
@@ -374,50 +374,50 @@
                         </div>
                     <pre class="prettyprint"><code>&lt;link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 
-    &lt;ul class="list-group"&gt;
-      &lt;% posts.forEach( function( post ) { %&gt;
-          &lt;li class="list-group-item"&gt;&lt%= post.name %&gt;&lt;/li&gt;
-      &lt;% }) %&gt;
-    &lt;/ul>
+&lt;ul class="list-group"&gt;
+  &lt;% posts.forEach( function( post ) { %&gt;
+      &lt;li class="list-group-item"&gt;&lt%= post.name %&gt;&lt;/li&gt;
+  &lt;% }) %&gt;
+&lt;/ul>
 
-    <mark style="background-color: #ffc">&lt;% if (pageCount > 1) { %&gt;  
-    &lt;ul class="pagination"&gt;  
-      &lt;% if (currentPage > 1) { %&gt;
-          &lt;li&gt;&lt;a href="/?page=1"&gt;&laquo;&lt;/a&gt;&lt;/li&gt;
-      &lt;% } %&gt;
-      &lt;% var i = 1;
-      if (currentPage > 5) {
-      i = +currentPage - 4;
-      } %&gt;
-      &lt;% if (i !== 1) { %&gt;
-          &lt;li class="disabled"&gt;&lt;a href="#"&gt;...&lt;/a&gt;&lt;/li&gt;
-      &lt;% } %&gt;
-      &lt;% for (i; i&lt;=pageCount; i++) { %&gt;
-        &lt;% if (currentPage == i) { %&gt;
-            &lt;li class="active"&gt;&lt;span&gt;&lt;%= i %&gt; &lt;span class="sr-only"&gt;(current)&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
-        &lt;% } else { %&gt;
-            &lt;li&gt;&lt;a href="/?page=&lt;%= i %&gt;"&gt;&lt;%= i %&gt;&lt;/a&gt;&lt;/li&gt;
-        &lt;% } %&gt;
-        &lt;% if (i == (+currentPage + 4)) { %&gt;
-            &lt;li class="disabled"&gt;&lt;a href="#"&gt;...&lt;/a&gt;&lt;/li&gt;
-        &lt;% break; } %&gt;
-      &lt;% } %&gt;
-      &lt;% if (currentPage != pageCount) { %&gt;
-          &lt;li&gt;&lt;a href="/?page=&lt;%= pageCount %>">&raquo;&lt;/a>&lt;/li&gt;
-      &lt;% } %&gt;
-    &lt;/ul&gt;  
-    &lt;% } %&gt;</mark></code></pre>
+<mark style="background-color: #ffc">&lt;% if (pageCount > 1) { %&gt;  
+&lt;ul class="pagination"&gt;  
+  &lt;% if (currentPage > 1) { %&gt;
+      &lt;li&gt;&lt;a href="/?page=1"&gt;&laquo;&lt;/a&gt;&lt;/li&gt;
+  &lt;% } %&gt;
+  &lt;% var i = 1;
+  if (currentPage > 5) {
+  i = +currentPage - 4;
+  } %&gt;
+  &lt;% if (i !== 1) { %&gt;
+      &lt;li class="disabled"&gt;&lt;a href="#"&gt;...&lt;/a&gt;&lt;/li&gt;
+  &lt;% } %&gt;
+  &lt;% for (i; i&lt;=pageCount; i++) { %&gt;
+    &lt;% if (currentPage == i) { %&gt;
+        &lt;li class="active"&gt;&lt;span&gt;&lt;%= i %&gt; &lt;span class="sr-only"&gt;(current)&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+    &lt;% } else { %&gt;
+        &lt;li&gt;&lt;a href="/?page=&lt;%= i %&gt;"&gt;&lt;%= i %&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;% } %&gt;
+    &lt;% if (i == (+currentPage + 4)) { %&gt;
+        &lt;li class="disabled"&gt;&lt;a href="#"&gt;...&lt;/a&gt;&lt;/li&gt;
+    &lt;% break; } %&gt;
+  &lt;% } %&gt;
+  &lt;% if (currentPage != pageCount) { %&gt;
+      &lt;li&gt;&lt;a href="/?page=&lt;%= pageCount %>">&raquo;&lt;/a>&lt;/li&gt;
+  &lt;% } %&gt;
+&lt;/ul&gt;  
+&lt;% } %&gt;</mark></code></pre>
                     </div>
 
                     <p>If you run your app again, it should work as expected. The <code>ul</code> is just a list of all the page numbers that are available on the site. Inside of the <code>ul</code> are a series of <code>li</code>, which contain links to the actual page. Most of the "complex" code is simply determining how to disable the current page, make it highlighted, include a next/previous page tab, etc. Unlike what I thought at first, this code has no relevance to the actual displaying of the posts - it is all simply to display a way to toggle between pages.</p>
 
-                    <p>If you have any questions or concerns, or want to contact me about the information in this article, or have an idea for a new article I should write, feel free to email me at jwill18@punahou.edu</p>
+                    <p>If you have any questions or concerns, or want to contact me about the information in this article, or have an idea for a new article I should write, feel free to email me at jakewwill18@gmail.com.</p>
                 </div>
             </div>
         </div>
-        <%- include('../../../../public/views/navbar-items/sidebar.ejs') %>
+        <%- include('../../../../../public/views/navbar-items/sidebar.ejs') %>
     </div>
-    <%- include('../../../../public/views/comments.ejs') %>
+    <%- include('../../../../../public/views/comments.ejs') %>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

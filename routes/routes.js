@@ -29,29 +29,38 @@ module.exports = function(app, passport) {
         });
 	});
 
-	app.get('/blog', function(req, res) {
+	app.get('/programming-tutorials', function(req, res) {
 		var connection = mysql.createConnection(dbconfig.connection);
 		connection.query('USE ' + dbconfig.database);
 
 		connection.query("SELECT * FROM posts",  function(err, rows) {
+			var allPosts = [];
+			// Necessary because of copying issues with objects in Javascript
+			for (var i = 0; i < rows.length; i++) {
+				if (rows[i].type == "programming_tutorial") {
+					allPosts.push(rows[i]);
+				}
+			}
+
+			var tempAllPosts = [];
+			for (var i = 0; i < rows.length; i++) {
+				if (rows[i].type == "programming_tutorial") {
+					tempAllPosts.push(rows[i]);
+				}
+			}
+
 			var pageSize = 10,
-				totalPosts = rows.length,
+				totalPosts = allPosts.length,
 				pageCount = Math.ceil(totalPosts/pageSize),
 				currentPage = 1,
-				allPosts = [],
 				posts = [],
 				postsArrays = [],
 				postsList = [];
 
-			// Necessary because of copying issues with objects in Javascript
-			for (var i = 0; i < rows.length; i++) {
-				allPosts.push(rows[i]);
-			}
-
-			posts = rows.reverse();
+			posts = tempAllPosts.reverse();
 
 			// Split the posts into groups
-			while (rows.length > 0) {
+			while (tempAllPosts.length > 0) {
 			    postsArrays.push(posts.splice(0, pageSize));
 			}
 
@@ -63,7 +72,221 @@ module.exports = function(app, passport) {
 		    // Show list of posts from current page
     		postsList = postsArrays[currentPage - 1];
 
-            if (postsList.length) {
+            if (postsList != null && postsList.length) {
+				res.render('navbar-items/programming_tutorials.ejs', {
+					pageSize: pageSize,
+			        totalPosts: totalPosts,
+			        pageCount: pageCount,
+			        currentPage: currentPage,
+					message: req.session.message,
+					postsPaginate : postsList,
+					posts : rows,
+					user: req.user || null
+				});
+			} else {
+				res.render('navbar-items/programming_tutorials.ejs', {
+					pageSize: pageSize,
+			        totalPosts: totalPosts,
+			        pageCount: pageCount,
+			        currentPage: currentPage,
+					message: req.session.message,
+					postsPaginate : [],
+					posts : rows,
+					user: req.user || null
+				});
+			}
+			req.session.message = null;
+        });
+	});
+
+	app.get("/programming-tutorials/:pageName", function (req, res) {
+	    var pageName = req.params.pageName;
+
+		var connection = mysql.createConnection(dbconfig.connection);
+		connection.query('USE ' + dbconfig.database);
+
+		var flashMessage = req.session.message;
+		req.session.message = null;
+
+		var query = connection.query("SELECT * FROM posts WHERE slug = ? ", pageName);
+
+		// In case of an error retrieving the data
+		query.on('error', function(err) { 
+			console.log('A database error occured:'); 
+			console.log(err);
+		});
+
+		query.on('result', function(result) {
+		  	if (result != null) {
+		  		connection.query("SELECT * FROM posts", function(err, rows) {
+		  			var posts = rows;
+		            if (rows.length) {
+		            	connection.query("SELECT * FROM comments WHERE post_id = ?", result.id, function(err, rows) {
+							res.render('posts/programming_tutorials/' + pageName + '/index.ejs', {
+								message: flashMessage,
+					  			comments: rows,
+					  			posts: posts,
+					  			post: result,
+					  			user: req.user || null
+				  			});
+						});
+					}
+				});
+			}
+		});
+	});
+
+	app.get('/tech-reviews', function(req, res) {
+		var connection = mysql.createConnection(dbconfig.connection);
+		connection.query('USE ' + dbconfig.database);
+
+		connection.query("SELECT * FROM posts",  function(err, rows) {
+			var allPosts = [];
+			// Necessary because of copying issues with objects in Javascript
+			for (var i = 0; i < rows.length; i++) {
+				if (rows[i].type == "tech-reviews") {
+					allPosts.push(rows[i]);
+				}
+			}
+
+			var tempAllPosts = [];
+			for (var i = 0; i < rows.length; i++) {
+				if (rows[i].type == "tech-reviews") {
+					tempAllPosts.push(rows[i]);
+				}
+			}
+
+			var pageSize = 10,
+				totalPosts = allPosts.length,
+				pageCount = Math.ceil(totalPosts/pageSize),
+				currentPage = 1,
+				posts = [],
+				postsArrays = [],
+				postsList = [];
+
+			posts = tempAllPosts.reverse();
+
+			// Split the posts into groups
+			while (tempAllPosts.length > 0) {
+			    postsArrays.push(posts.splice(0, pageSize));
+			}
+
+			// Set current page as variable
+		    if (typeof req.query.page !== 'undefined') {
+		        currentPage = req.query.page;
+		    }
+
+		    // Show list of posts from current page
+    		postsList = postsArrays[currentPage - 1];
+
+            if (postsList != null && postsList.length) {
+				res.render('navbar-items/tech_reviews.ejs', {
+					pageSize: pageSize,
+			        totalPosts: totalPosts,
+			        pageCount: pageCount,
+			        currentPage: currentPage,
+					message: req.session.message,
+					postsPaginate : postsList,
+					posts : rows,
+					user: req.user || null
+				});
+			} else {
+				res.render('navbar-items/tech_reviews.ejs', {
+					pageSize: pageSize,
+			        totalPosts: totalPosts,
+			        pageCount: pageCount,
+			        currentPage: currentPage,
+					message: req.session.message,
+					postsPaginate : [],
+					posts : rows,
+					user: req.user || null
+				});
+			}
+			req.session.message = null;
+        });
+	});
+
+	app.get("/tech-reviews/:pageName", function (req, res) {
+	    var pageName = req.params.pageName;
+
+		var connection = mysql.createConnection(dbconfig.connection);
+		connection.query('USE ' + dbconfig.database);
+
+		var flashMessage = req.session.message;
+		req.session.message = null;
+
+		var query = connection.query("SELECT * FROM posts WHERE slug = ? ", pageName);
+
+		// In case of an error retrieving the data
+		query.on('error', function(err) { 
+			console.log('A database error occured:'); 
+			console.log(err);
+		});
+
+		query.on('result', function(result) {
+		  	if (result != null) {
+		  		connection.query("SELECT * FROM posts", function(err, rows) {
+		  			var posts = rows;
+		            if (rows.length) {
+		            	connection.query("SELECT * FROM comments WHERE post_id = ?", result.id, function(err, rows) {
+							res.render('posts/tech_reviews/' + pageName + '/index.ejs', {
+								message: flashMessage,
+					  			comments: rows,
+					  			posts: posts,
+					  			post: result,
+					  			user: req.user || null
+				  			});
+						});
+					}
+				});
+			}
+		});
+	});
+
+	app.get('/blog', function(req, res) {
+		var connection = mysql.createConnection(dbconfig.connection);
+		connection.query('USE ' + dbconfig.database);
+
+		connection.query("SELECT * FROM posts",  function(err, rows) {
+			var allPosts = [];
+			// Necessary because of copying issues with objects in Javascript
+			for (var i = 0; i < rows.length; i++) {
+				if (rows[i].type == "blog_post") {
+					allPosts.push(rows[i]);
+				}
+			}
+
+			var tempAllPosts = [];
+			for (var i = 0; i < rows.length; i++) {
+				if (rows[i].type == "blog_post") {
+					tempAllPosts.push(rows[i]);
+				}
+			}
+
+			var pageSize = 10,
+				totalPosts = allPosts.length,
+				pageCount = Math.ceil(totalPosts/pageSize),
+				currentPage = 1,
+				posts = [],
+				postsArrays = [],
+				postsList = [];
+
+			posts = tempAllPosts.reverse();
+
+			// Split the posts into groups
+			while (tempAllPosts.length > 0) {
+			    postsArrays.push(posts.splice(0, pageSize));
+			}
+
+			// Set current page as variable
+		    if (typeof req.query.page !== 'undefined') {
+		        currentPage = req.query.page;
+		    }
+
+		    // Show list of posts from current page
+    		postsList = postsArrays[currentPage - 1];
+
+            if (postsList != null && postsList.length) {
 				res.render('navbar-items/blog.ejs', {
 					pageSize: pageSize,
 			        totalPosts: totalPosts,
@@ -83,53 +306,6 @@ module.exports = function(app, passport) {
 					message: req.session.message,
 					postsPaginate : [],
 					posts : allPosts,
-					user: req.user || null
-				});
-			}
-			req.session.message = null;
-        });
-	});
-
-	app.get('/games', function(req, res) {
-		var connection = mysql.createConnection(dbconfig.connection);
-		connection.query('USE ' + dbconfig.database);
-
-		connection.query("SELECT * FROM games",  function(err, rows) {
-            if (rows.length) {
-				res.render('navbar-items/games.ejs', {
-					message: req.session.message,
-					games : rows,
-					user: req.user || null
-				});
-			} else {
-				res.render('navbar-items/games.ejs', {
-					message: req.session.message,
-					games : [],
-					user: req.user || null
-				});
-			}
-			req.session.message = null;
-        });
-	});
-
-	app.get('/apps', function(req, res) {
-		var connection = mysql.createConnection(dbconfig.connection);
-		connection.query('USE ' + dbconfig.database);
-
-		var message = req.session.message;
-		req.session.message = null
-
-		connection.query("SELECT * FROM apps",  function(err, rows) {
-            if (rows.length) {
-				res.render('navbar-items/apps.ejs', {
-					message: message,
-					apps : rows,
-					user: req.user || null
-				});
-			} else {
-				res.render('navbar-items/apps.ejs', {
-					message: message,
-					apps : [],
 					user: req.user || null
 				});
 			}
@@ -160,7 +336,7 @@ module.exports = function(app, passport) {
 		  			var posts = rows;
 		            if (rows.length) {
 		            	connection.query("SELECT * FROM comments WHERE post_id = ?", result.id, function(err, rows) {
-							res.render('posts/' + pageName + '/index.ejs', {
+							res.render('posts/blog_posts/' + pageName + '/index.ejs', {
 								message: flashMessage,
 					  			comments: rows,
 					  			posts: posts,
@@ -171,59 +347,6 @@ module.exports = function(app, passport) {
 					}
 				});
 			}
-		});
-	});
-
-	app.get("/games/:pageName", function (req, res) {
-	    var pageName = req.params.pageName;
-
-		var connection = mysql.createConnection(dbconfig.connection);
-		connection.query('USE ' + dbconfig.database);
-
-		var query = connection.query("SELECT * FROM games WHERE slug = ? ", pageName);
-
-		// In case of an error retrieving the data
-		query.on('error', function(err) { 
-			console.log('A database error occured:'); 
-			console.log(err);
-		});
-
-		query.on('result', function(result) {
-		  	if (result != null) {
-		  		res.render('games/' + result.folder_name + '/index.ejs', {
-		  			game: result,
-		  			user: req.user || null
-		  		});
-		  	}
-		});
-	});
-
-	app.get("/apps/:pageName", function (req, res) {
-	    var pageName = req.params.pageName;
-
-		var connection = mysql.createConnection(dbconfig.connection);
-		connection.query('USE ' + dbconfig.database);
-
-		var flashMessage = req.flash.message;
-		req.flash.message = null;
-
-		var query = connection.query("SELECT * FROM apps WHERE slug = ? ", pageName);
-
-		// In case of an error retrieving the data
-		query.on('error', function(err) { 
-			console.log('A database error occured:'); 
-			console.log(err);
-		});
-
-		query.on('result', function(result) {
-		  	if (result != null) {
-		  		res.render('apps/' + result.folder_name + '/index.ejs', {
-		  			stringSimilarity: stringSimilarity,
-		  			message: flashMessage,
-		  			app: result,
-		  			user: req.user || null
-		  		});
-		  	}
 		});
 	});
 
@@ -376,53 +499,6 @@ module.exports = function(app, passport) {
 		res.redirect('/');
 	});
 
-	app.get('/newGame', function(req, res) {
-		res.render('createGame.ejs');
-	});
-
-	app.post('/newGame', function(req, res) {
-		var connection = mysql.createConnection(dbconfig.connection);
-		connection.query('USE ' + dbconfig.database);
-
-		var newGame = {
-			username: req.user.username,
-			title: req.body.title,
-			description: req.body.description,
-			folder_name: req.body.folder_name,
-			slug: req.body.slug
-		};
-		
-		var insertQuery = "INSERT INTO games ( username, title, description, folder_name, slug ) values (?,?,?,?,?)";
-
-		connection.query(insertQuery, [newGame.username, newGame.title, newGame.description, newGame.folder_name, newGame.slug]);
-
-		req.session.message = 'Game successfully created';
-		res.redirect('/');
-	});
-
-	app.get('/newApp', function(req, res) {
-		res.render('createApp.ejs');
-	});
-
-	app.post('/newApp', function(req, res) {
-		var connection = mysql.createConnection(dbconfig.connection);
-		connection.query('USE ' + dbconfig.database);
-
-		var newApp = {
-			username: req.user.username,
-			title: req.body.title,
-			description: req.body.description,
-			folder_name: req.body.folder_name,
-			slug: req.body.slug
-		}
-
-		var insertQuery = "INSERT INTO apps ( username, title, description, folder_name, slug ) values (?,?,?,?,?)";
-		connection.query(insertQuery, [newApp.username, newApp.title, newApp.description, newApp.folder_name, newApp.slug]);
-
-		req.session.message = 'App successfully created';
-		res.redirect('/');
-	});
-
 	app.post('/comment', function(req, res) {
 		if (req.user) { // Ensure that a user is logged in
 			var connection = mysql.createConnection(dbconfig.connection);
@@ -437,7 +513,12 @@ module.exports = function(app, passport) {
 			var insertQuery = "INSERT INTO comments ( post_id, parent_comment_id, username, content) values (?,?,?,?)";
 			connection.query(insertQuery, [newComment.post_id, newComment.parent_comment_id, newComment.username, newComment.content]);
 			
-			req.session.message = 'Comment successfully created';
+			if (newComment.parent_comment_id == -1) {
+				req.session.message = 'Comment successfully posted';
+			} else {
+				req.session.message = 'Reply successfully posted';
+			}
+			
 			res.redirect(req.get('referer'));
 		} else {
 			req.session.message = 'Error! You must login to leave a comment';
@@ -455,30 +536,6 @@ module.exports = function(app, passport) {
 		connection.query("delete from posts where slug = ?", slug, function(err, rows) {
 			req.session.message = 'Post successfully deleted';
 			res.redirect('/blog')
-		});		
-	});
-
-	app.post('/deleteGame', function(req, res) {
-		var connection = mysql.createConnection(dbconfig.connection);
-		connection.query('USE ' + dbconfig.database);
-
-		var slug = req.body.slug
-		
-		connection.query("delete from games where slug = ?", slug, function(err, rows) {
-			req.session.message = 'Game successfully deleted';
-			res.redirect('/games')
-		});		
-	});
-
-	app.post('/deleteApp', function(req, res) {
-		var connection = mysql.createConnection(dbconfig.connection);
-		connection.query('USE ' + dbconfig.database);
-
-		var slug = req.body.slug
-		
-		connection.query("delete from apps where slug = ?", slug, function(err, rows) {
-			req.session.message = 'App successfully deleted';
-			res.redirect('/apps')
 		});		
 	});
 
@@ -507,7 +564,7 @@ module.exports = function(app, passport) {
 		failureFlash : true // allow flash messages
 	}));
 
-	app.get('/profile', isLoggedIn, function(req, res) {
+	/*app.get('/profile', isLoggedIn, function(req, res) {
 		var connection = mysql.createConnection(dbconfig.connection);
 		connection.query('USE ' + dbconfig.database);
 
@@ -536,7 +593,7 @@ module.exports = function(app, passport) {
 	app.get('/logout', function(req, res) {
 		req.logout();
 		res.redirect('/');
-	});
+	});*/
 }
 
 function isLoggedIn(req, res, next) {

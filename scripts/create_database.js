@@ -5,7 +5,6 @@ var dbconfig = require('../config/database');
 
 var connection = mysql.createConnection(dbconfig.connection);
 
-//connection.query('CREATE DATABASE ' + dbconfig.database);
 connection.query('use ' + dbconfig.database);
 
 connection.query('\
@@ -22,6 +21,7 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.users_table + '` ( \
     `email` VARCHAR(40) NOT NULL, \
     `username` VARCHAR(30) NOT NULL, \
     `password` CHAR(60) NOT NULL, \
+    `profile_path` VARCHAR(120), \
     `admin` INT UNSIGNED NOT NULL, \
         PRIMARY KEY (`id`), \
     UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
@@ -31,12 +31,13 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.users_table + '` ( \
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.posts_table + '` ( \
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+    `type` TEXT NOT NULL, \
     `username` VARCHAR(20) NOT NULL, \
     `title` TEXT NOT NULL, \
     `description` TEXT NOT NULL, \
     `tags` VARCHAR(60) NOT NULL, \
-    `folder_name` VARCHAR(60) NOT NULL, \
-    `slug` VARCHAR(60) NOT NULL, \
+    `folder_name` VARCHAR(120) NOT NULL, \
+    `slug` VARCHAR(120) NOT NULL, \
         PRIMARY KEY (`id`), \
     UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
     UNIQUE INDEX `slug_UNIQUE` (`slug` ASC), \
@@ -61,8 +62,8 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.games_table + '` ( \
     `username` VARCHAR(20) NOT NULL, \
     `title` TEXT NOT NULL, \
     `description` TEXT NOT NULL, \
-    `folder_name` VARCHAR(30) NOT NULL, \
-    `slug` VARCHAR(40) NOT NULL, \
+    `folder_name` VARCHAR(120) NOT NULL, \
+    `slug` VARCHAR(120) NOT NULL, \
         PRIMARY KEY (`id`), \
     UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
     UNIQUE INDEX `slug_UNIQUE` (`slug` ASC), \
@@ -75,8 +76,8 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.apps_table + '` ( \
     `username` VARCHAR(20) NOT NULL, \
     `title` TEXT NOT NULL, \
     `description` TEXT NOT NULL, \
-    `folder_name` VARCHAR(30) NOT NULL, \
-    `slug` VARCHAR(40) NOT NULL, \
+    `folder_name` VARCHAR(120) NOT NULL, \
+    `slug` VARCHAR(120) NOT NULL, \
         PRIMARY KEY (`id`), \
     UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
     UNIQUE INDEX `slug_UNIQUE` (`slug` ASC), \

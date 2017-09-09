@@ -50,12 +50,13 @@ module.exports = function(passport) {
                                 email: req.body.email,
                                 username: username,
                                 password: bcrypt.hashSync(password, null, null),
+                                profile_path: 'https://s3-us-west-1.amazonaws.com/technologybasis/Blank+Profile.png',
                                 admin: 1
                             };
 
-                            var insertQuery = "INSERT INTO users ( email, username, password, admin ) values (?,?,?,?)";
+                            var insertQuery = "INSERT INTO users ( email, username, password, profile_path, admin ) values (?,?,?,?,?)";
 
-                            connection.query(insertQuery,[newUserMysql.email, newUserMysql.username, newUserMysql.password, newUserMysql.admin], function(err, rows) {
+                            connection.query(insertQuery,[newUserMysql.email, newUserMysql.username, newUserMysql.password, newUserMysql.profile_path, newUserMysql.admin], function(err, rows) {
                                 newUserMysql.id = rows.insertId;
 
                                 return done(null, newUserMysql);
@@ -65,12 +66,13 @@ module.exports = function(passport) {
                                 email: req.body.email,
                                 username: username,
                                 password: bcrypt.hashSync(password, null, null),
+                                profile_path: 'https://s3-us-west-1.amazonaws.com/technologybasis/Blank+Profile.png',
                                 admin: 0
                             };
 
-                            var insertQuery = "INSERT INTO users ( email, username, password, admin ) values (?,?,?,?)";
+                            var insertQuery = "INSERT INTO users ( email, username, password, profile_path, admin ) values (?,?,?,?,?)";
 
-                            connection.query(insertQuery,[newUserMysql.email, newUserMysql.username, newUserMysql.password, newUserMysql.admin], function(err, rows) {
+                            connection.query(insertQuery,[newUserMysql.email, newUserMysql.username, newUserMysql.password, newUserMysql.profile_path, newUserMysql.admin], function(err, rows) {
                                 newUserMysql.id = rows.insertId;
 
                                 return done(null, newUserMysql);

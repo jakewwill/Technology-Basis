@@ -2,7 +2,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Blog</title>
+    <title>Tech Reviews</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -13,8 +13,8 @@
   <div class="row">
     <div class="col-md-9">
         <div class="container">
-            <div class="jumbotron text-center" style="padding: 5px 25px 0 25px">
-                <h1 style="margin: 15px 0 20px 0">Blog</h1>
+            <div class="jumbotron text-justify" style="padding: 5px 25px 0 25px; display: inline; float: left; width: 100%">
+                <h1 style="text-align: center" style="margin: 0">Tech Reviews</h1>
                 <% if (message != null) { %>
                     <div class="alert alert-danger"><%= message %></div>
                 <% } %>
@@ -22,6 +22,7 @@
         </div>
         <br>
         <% postsPaginate.forEach(function(post) { %>
+          <% if (post.type == "tech_review") { %>
             <div class="container" style="padding-bottom: 30px">
                 <ul class="list-group" style="list-style-type: none;">
                     <li class="list-group-item-blog">
@@ -48,6 +49,7 @@
                 </ul>
             </div>
             <br>
+          <% } %>
         <% }) %>
 
         <% if (pageCount > 1) { %>  
@@ -78,6 +80,7 @@
             </ul>  
         <% } %>
     </div> <!-- col-md-9 -->
+
     <% include sidebar.ejs %>
   </div> <!-- row -->
 
